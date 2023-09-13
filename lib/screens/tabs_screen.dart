@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:sipkys/components/players/menu/create_player_modal.dart';
+import 'package:sipkys/components/ui/custom_alert.dart';
 import 'package:sipkys/components/ui/custom_fab.dart';
+import 'package:sipkys/screens/game_screen.dart';
 import 'package:sipkys/screens/menu_screen.dart';
 import 'package:sipkys/screens/players_screen.dart';
+import 'package:sipkys/providers/players_provider.dart';
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() => _TabsScreenState();
+  ConsumerState<TabsScreen> createState() => _TabsScreenState();
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends ConsumerState<TabsScreen> {
   int activeScreenIndex = 0;
 
   void _switchScreen(BuildContext context, int index) {
@@ -21,12 +25,34 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
+  void _showNoActivePlayersDialog() {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return CustomAlert(ctx,
+              title: 'Nedostatek hráčů',
+              content: 'Abys mohl začít hru, přidej alespoň jednoho hráče.');
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     String screenTitle = 'Šipkys Počítadlo';
     Widget fab = CustomFAB(
       icon: Icons.play_arrow_rounded,
-      onPressed: () {},
+      onPressed: () {
+        if (ref.read(activePlayersProvider).isEmpty) {
+          _showNoActivePlayersDialog();
+          return;
+        }
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const GameScreen(),
+          ),
+        );
+      },
     );
     Widget activeScreen = const MenuScreen();
 

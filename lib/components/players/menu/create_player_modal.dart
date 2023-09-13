@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sipkys/components/ui/custom_alert.dart';
 
 import 'package:sipkys/components/ui/custom_fab.dart';
 import 'package:sipkys/data/player_icons.dart';
@@ -32,29 +33,8 @@ class _CreatePlayerModalState extends ConsumerState<CreatePlayerModal> {
     if (nameController.text.trim().isEmpty) {
       showDialog(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(
-            'Prázdné jméno',
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium!
-                .copyWith(fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            'Prosím vyplň jméno hráče.',
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: Colors.white60,
-                ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+        builder: (ctx) => CustomAlert(ctx,
+            title: 'Prázdné jméno', content: 'Prosím vyplň jméno hráče.'),
       );
       return;
     }
