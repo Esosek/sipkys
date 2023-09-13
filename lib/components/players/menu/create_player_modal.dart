@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:sipkys/components/ui/custom_fab.dart';
 import 'package:sipkys/data/player_icons.dart';
-import '../../../models/player.dart';
+import 'package:sipkys/providers/players_provider.dart';
 
-class CreatePlayerModal extends StatefulWidget {
+class CreatePlayerModal extends ConsumerStatefulWidget {
   const CreatePlayerModal({super.key});
 
   @override
-  State<CreatePlayerModal> createState() => _CreatePlayerModalState();
+  ConsumerState<CreatePlayerModal> createState() => _CreatePlayerModalState();
 }
 
-class _CreatePlayerModalState extends State<CreatePlayerModal> {
+class _CreatePlayerModalState extends ConsumerState<CreatePlayerModal> {
   final nameController = TextEditingController();
   int activeIcon = 0;
 
@@ -57,12 +58,9 @@ class _CreatePlayerModalState extends State<CreatePlayerModal> {
       );
       return;
     }
-    // TODO: Create player in global state
-    final newPlayer = Player(
-        id: 0, // Fix to existingPlayers.length
-        imageUrl: playerIconsUrl[activeIcon],
-        name: nameController.text.trim());
-    print('${newPlayer.name} was created');
+    ref
+        .read(playersProvider.notifier)
+        .addPlayer(nameController.text.trim(), playerIconsUrl[activeIcon]);
     Navigator.pop(context);
   }
 

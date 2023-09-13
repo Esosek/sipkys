@@ -1,38 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:sipkys/components/players/menu/player_list_item.dart';
-import 'package:sipkys/data/dummy_players.dart';
-
 import 'package:sipkys/models/player.dart';
+import 'package:sipkys/providers/players_provider.dart';
 
-class PlayerList extends StatefulWidget {
+class PlayerList extends ConsumerStatefulWidget {
   const PlayerList({super.key});
 
   @override
-  State<PlayerList> createState() => _PlayerListState();
+  ConsumerState<PlayerList> createState() => _PlayerListState();
 }
 
-class _PlayerListState extends State<PlayerList> {
-  final List<Player> activePlayers = List<Player>.from(dummyPlayers);
-  //final List<Player> activePlayers = [];
-
-  void _removePlayer(Player player) {
-    setState(() {
-      activePlayers.remove(player);
-    });
-  }
-
-  void _reorderPlayers(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
-    final player = activePlayers.removeAt(oldIndex);
-    setState(() {
-      activePlayers.insert(newIndex, player);
-    });
-  }
-
+class _PlayerListState extends ConsumerState<PlayerList> {
   @override
   Widget build(BuildContext context) {
+    final activePlayers = ref.watch(activePlayersProvider);
+
+    void deactivatePlayer(Player player) {
+      ref
+          .read(playersProvider.notifier)
+          .setPlayerActiveStatus(player.id, false);
+    }
+
+    void reorderPlayers(int oldIndex, int newIndex) {
+      if (oldIndex < newIndex) {
+        newIndex -= 1;
+      }
+      final player = activePlayers.removeAt(oldIndex);
+      setState(() {
+        activePlayers.insert(newIndex, player);
+      });
+    }
+
     Widget content = Padding(
       padding: const EdgeInsets.only(top: 20, bottom: 30),
       child: Text(
@@ -53,13 +53,13 @@ class _PlayerListState extends State<PlayerList> {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
-                onReorder: _reorderPlayers,
+                onReorder: reorderPlayers,
                 children: [
                   for (Player player in activePlayers)
                     PlayerListItem(
                       key: ValueKey(player.id),
                       player,
-                      onPressed: _removePlayer,
+                      onPressed: deactivatePlayer,
                     ),
                 ],
               ),

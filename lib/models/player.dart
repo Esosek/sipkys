@@ -12,4 +12,19 @@ class Player {
   final String imageUrl;
   final int wins;
   bool isActive;
+
+  Player copyWith({
+    String? name,
+    String? imageUrl,
+    int? wins,
+    bool? isActive,
+  }) {
+    return Player(
+      id: id,
+      name: name ?? this.name,
+      imageUrl: imageUrl ?? this.imageUrl,
+      wins: wins ?? this.wins,
+      isActive: isActive ?? this.isActive,
+    );
+  }
 }

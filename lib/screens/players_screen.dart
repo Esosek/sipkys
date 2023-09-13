@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:sipkys/components/players/no_players_notice.dart';
 import 'package:sipkys/components/players/players_screen/player_record.dart';
-
-import 'package:sipkys/data/dummy_players.dart';
 import 'package:sipkys/models/player.dart';
+import 'package:sipkys/providers/players_provider.dart';
 
-class PlayersScreen extends StatelessWidget {
+class PlayersScreen extends ConsumerWidget {
   const PlayersScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final players = dummyPlayers;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final players = ref.watch(playersProvider);
 
     Widget content = const NoPlayersNotice();
 

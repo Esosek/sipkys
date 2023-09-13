@@ -1,33 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:sipkys/components/game-modes/game_mode_item.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GameModeList extends StatefulWidget {
+import 'package:sipkys/components/game-modes/game_mode_item.dart';
+import 'package:sipkys/providers/game_mode_provider.dart';
+
+class GameModeList extends ConsumerWidget {
   const GameModeList({super.key});
 
-  @override
-  State<GameModeList> createState() => _GameModeListState();
-}
-
-class _GameModeListState extends State<GameModeList> {
-  String activeMode = '301';
-
-  void setMode(String mode) {
-    setState(() {
-      activeMode = mode;
-    });
+  void setMode(String mode, WidgetRef ref) {
+    ref.read(gameModeProvider.notifier).setMode(mode);
   }
 
   @override
-  Widget build(BuildContext context) {
-    List<String> gameModes = ['301', '501'];
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         for (int i = 0; i < gameModes.length; i++)
           GameModeItem(
             title: gameModes[i],
-            isActive: activeMode == gameModes[i],
-            onPressed: setMode,
+            isActive: ref.watch(gameModeProvider) == gameModes[i],
+            onPressed: (String mode) {
+              setMode(mode, ref);
+            },
           ),
       ],
     );

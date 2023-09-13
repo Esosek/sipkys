@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:sipkys/components/players/no_players_notice.dart';
 import 'package:sipkys/components/ui/custom_fab.dart';
 import 'package:sipkys/components/players/menu/player_display.dart';
-import 'package:sipkys/data/dummy_players.dart';
 import 'package:sipkys/models/player.dart';
+import 'package:sipkys/providers/players_provider.dart';
 
-class AddPlayerModal extends StatefulWidget {
+class AddPlayerModal extends ConsumerStatefulWidget {
   const AddPlayerModal({super.key});
 
   @override
-  State<AddPlayerModal> createState() => _AddPlayerModalState();
+  ConsumerState<AddPlayerModal> createState() => _AddPlayerModalState();
 }
 
-class _AddPlayerModalState extends State<AddPlayerModal> {
-  final List<Player> availablePlayers = List.of(dummyPlayers);
-
-  void _addPlayer(Player player) {
-    setState(() {
-      availablePlayers.remove(player);
-    });
-  }
-
+class _AddPlayerModalState extends ConsumerState<AddPlayerModal> {
   @override
   Widget build(BuildContext context) {
+    final List<Player> availablePlayers =
+        ref.watch(playersProvider).where((player) => !player.isActive).toList();
     Widget content = const NoPlayersNotice(popContext: true);
+
+    void activatePlayer(int playerId) {
+      ref.read(playersProvider.notifier).setPlayerActiveStatus(playerId, true);
+    }
 
     if (availablePlayers.isNotEmpty) {
       content = Expanded(
@@ -37,8 +36,9 @@ class _AddPlayerModalState extends State<AddPlayerModal> {
           children: [
             for (Player player in availablePlayers)
               PlayerDisplay(
+                key: ValueKey(player.id),
                 player,
-                onTap: _addPlayer,
+                onTap: activatePlayer,
               ),
           ],
         ),

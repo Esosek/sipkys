@@ -6,14 +6,14 @@ class PlayerDisplay extends StatelessWidget {
   const PlayerDisplay(this.player, {super.key, this.onTap});
 
   final Player player;
-  final void Function(Player)? onTap;
+  final void Function(int)? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap != null
           ? () {
-              onTap!(player);
+              onTap!(player.id);
             }
           : null,
       child: Column(

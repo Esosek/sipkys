@@ -5,11 +5,13 @@ List<Player> dummyPlayers = [
     id: 0,
     name: 'Aleš',
     imageUrl: 'assets/images/snake.png',
+    isActive: true,
   ),
   Player(
     id: 1,
     name: 'Majkoslávek',
     imageUrl: 'assets/images/penguin.png',
+    isActive: true,
   ),
   Player(
     id: 2,
