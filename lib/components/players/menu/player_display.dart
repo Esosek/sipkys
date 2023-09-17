@@ -3,10 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:sipkys/models/player.dart';
 
 class PlayerDisplay extends StatelessWidget {
-  const PlayerDisplay(this.player, {super.key, this.onTap});
+  const PlayerDisplay(this.player,
+      {super.key,
+      this.onTap,
+      this.showWins = false,
+      this.iconSize = 60,
+      this.crossAxisAlignment = CrossAxisAlignment.center});
 
   final Player player;
   final void Function(int)? onTap;
+  final bool showWins;
+  final double iconSize;
+  final CrossAxisAlignment crossAxisAlignment;
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +25,8 @@ class PlayerDisplay extends StatelessWidget {
             }
           : null,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: crossAxisAlignment,
         children: [
           Text(
             player.name,
@@ -31,20 +41,21 @@ class PlayerDisplay extends StatelessWidget {
             children: [
               Image.asset(
                 player.imageUrl,
-                height: 60,
+                height: iconSize,
               ),
-              Positioned(
-                bottom: -15,
-                left: 0,
-                child: CircleAvatar(
-                  foregroundColor: Colors.black,
-                  radius: 15,
-                  backgroundColor: const Color.fromARGB(255, 203, 209, 78),
-                  child: Text(
-                    player.wins.toString(),
+              if (showWins)
+                Positioned(
+                  bottom: -15,
+                  left: 0,
+                  child: CircleAvatar(
+                    foregroundColor: Colors.black,
+                    radius: 15,
+                    backgroundColor: const Color.fromARGB(255, 203, 209, 78),
+                    child: Text(
+                      player.wins.toString(),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ],

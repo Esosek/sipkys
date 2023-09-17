@@ -39,6 +39,7 @@ class _AddPlayerModalState extends ConsumerState<AddPlayerModal> {
                 key: ValueKey(player.id),
                 player,
                 onTap: activatePlayer,
+                showWins: true,
               ),
           ],
         ),

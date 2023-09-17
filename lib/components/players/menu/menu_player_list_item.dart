@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:sipkys/models/player.dart';
 
-class PlayerListItem extends StatelessWidget {
-  const PlayerListItem(this.player, {super.key, required this.onPressed});
+class MenuPlayerListItem extends StatelessWidget {
+  const MenuPlayerListItem(this.player, {super.key, required this.onPressed});
 
   final Player player;
   final void Function(Player) onPressed;

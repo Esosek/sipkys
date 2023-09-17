@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:sipkys/components/players/menu/player_list_item.dart';
+import 'package:sipkys/components/players/menu/menu_player_list_item.dart';
 import 'package:sipkys/models/player.dart';
 import 'package:sipkys/providers/players_provider.dart';
 
-class PlayerList extends ConsumerStatefulWidget {
-  const PlayerList({super.key});
+class MenuPlayerList extends ConsumerStatefulWidget {
+  const MenuPlayerList({super.key});
 
   @override
-  ConsumerState<PlayerList> createState() => _PlayerListState();
+  ConsumerState<MenuPlayerList> createState() => _PlayerListState();
 }
 
-class _PlayerListState extends ConsumerState<PlayerList> {
+class _PlayerListState extends ConsumerState<MenuPlayerList> {
   @override
   Widget build(BuildContext context) {
     final activePlayers = ref.watch(activePlayersProvider);
@@ -56,7 +56,7 @@ class _PlayerListState extends ConsumerState<PlayerList> {
                 onReorder: reorderPlayers,
                 children: [
                   for (Player player in activePlayers)
-                    PlayerListItem(
+                    MenuPlayerListItem(
                       key: ValueKey(player.id),
                       player,
                       onPressed: deactivatePlayer,

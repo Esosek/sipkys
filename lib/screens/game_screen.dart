@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:sipkys/components/ingame/game_player_list.dart';
+import 'package:sipkys/components/ui/keyboard.dart';
 import 'package:sipkys/providers/game_mode_provider.dart';
 import 'package:sipkys/providers/players_provider.dart';
 
@@ -32,7 +34,17 @@ class GameScreen extends ConsumerWidget {
               ),
         ),
       ),
-      body: ,
+      body: Column(
+        children: [
+          const GamePlayerList(),
+          const SizedBox(height: 5),
+          Keyboard(
+            onTap: (keyCode) {
+              print('$keyCode was pressed');
+            },
+          ),
+        ],
+      ),
     );
   }
 }
