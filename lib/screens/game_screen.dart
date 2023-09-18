@@ -5,12 +5,23 @@ import 'package:sipkys/components/ingame/game_player_list.dart';
 import 'package:sipkys/components/ui/keyboard.dart';
 import 'package:sipkys/providers/game_mode_provider.dart';
 import 'package:sipkys/providers/players_provider.dart';
+import 'package:sipkys/providers/score_provider.dart';
 
-class GameScreen extends ConsumerWidget {
+class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends ConsumerState<GameScreen> {
+  @override
+  void onKeyboardTap(String keyCode) {
+    print('$keyCode was pressed');
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final players = ref.read(activePlayersProvider);
     final gameMode = ref.read(gameModeProvider);
 
@@ -39,9 +50,7 @@ class GameScreen extends ConsumerWidget {
           const GamePlayerList(),
           const SizedBox(height: 5),
           Keyboard(
-            onTap: (keyCode) {
-              print('$keyCode was pressed');
-            },
+            onTap: onKeyboardTap,
           ),
         ],
       ),

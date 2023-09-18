@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sipkys/components/ingame/single_throw_score.dart';
 import 'package:sipkys/components/players/menu/player_display.dart';
 
 import 'package:sipkys/models/player.dart';
+import 'package:sipkys/providers/score_provider.dart';
 
-class GamePlayerTile extends StatelessWidget {
+class GamePlayerTile extends ConsumerWidget {
   const GamePlayerTile(
       {super.key, required this.player, required this.isActive});
 
@@ -12,7 +14,8 @@ class GamePlayerTile extends StatelessWidget {
   final bool isActive;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final score = ref.watch(scoreProvider)[player]!;
     return Card(
       color: Theme.of(context).colorScheme.secondaryContainer,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -45,7 +48,7 @@ class GamePlayerTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  '501',
+                  score.totalScore.toString(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 10),
