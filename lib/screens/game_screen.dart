@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:sipkys/components/ingame/game_player_list.dart';
+import 'package:sipkys/components/ui/custom_elevated_btn.dart';
 import 'package:sipkys/components/ui/keyboard.dart';
 import 'package:sipkys/models/player.dart';
 import 'package:sipkys/providers/game_mode_provider.dart';
@@ -100,6 +101,44 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     scoreProviderNotifier.resetPlayerRoundScore(players[_activePlayerId]);
   }
 
+  Future<bool> _showCancelDialog() async {
+    final shouldClose = await showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          actionsAlignment: MainAxisAlignment.spaceAround,
+          title: Text(
+            'Opravdu chceš hru ukončit?',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          content: Text(
+            'Všechny hody budou ztraceny.',
+            textAlign: TextAlign.center,
+            style:
+                Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 15),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop(false);
+              },
+              child: const Text('Ne'),
+            ),
+            CustomElevatedBtn(
+              onPressed: () {
+                Navigator.of(ctx).pop(true);
+              },
+              title: 'Ano',
+            ),
+          ],
+        );
+      },
+    );
+
+    return shouldClose ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     String playerText = 'hráči';
@@ -122,16 +161,22 @@ class _GameScreenState extends ConsumerState<GameScreen> {
               ),
         ),
       ),
-      body: Column(
-        children: [
-          GamePlayerList(
-            activePlayerIndex: _activePlayerId,
-          ),
-          const SizedBox(height: 5),
-          Keyboard(
-            onTap: onKeyboardTap,
-          ),
-        ],
+      body: WillPopScope(
+        onWillPop: () async {
+          final shouldPop = await _showCancelDialog();
+          return shouldPop;
+        },
+        child: Column(
+          children: [
+            GamePlayerList(
+              activePlayerIndex: _activePlayerId,
+            ),
+            const SizedBox(height: 5),
+            Keyboard(
+              onTap: onKeyboardTap,
+            ),
+          ],
+        ),
       ),
     );
   }
