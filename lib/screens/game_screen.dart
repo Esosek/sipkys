@@ -7,6 +7,7 @@ import 'package:sipkys/models/player.dart';
 import 'package:sipkys/providers/game_mode_provider.dart';
 import 'package:sipkys/providers/players_provider.dart';
 import 'package:sipkys/providers/score_provider.dart';
+import 'package:sipkys/screens/end_screen.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({super.key});
@@ -65,6 +66,19 @@ class _GameScreenState extends ConsumerState<GameScreen> {
       return;
     }
     scoreProviderNotifier.submitThrow(players[_activePlayerId], finalValue);
+
+    // Check if the player closed the game
+    if (ref.read(scoreProvider)[players[_activePlayerId]]!.totalScore <= 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const EndScreen(),
+        ),
+      );
+      return;
+    }
+
+    // If not, pass the turn
     _darts--;
     if (_darts == 0) {
       passTurn();

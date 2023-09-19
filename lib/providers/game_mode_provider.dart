@@ -9,7 +9,6 @@ class GameModeNotifier extends StateNotifier<String> {
     if (!gameModes.contains(newMode)) {
       return;
     }
-
     state = newMode;
   }
 }
