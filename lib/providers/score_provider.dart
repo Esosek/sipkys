@@ -7,9 +7,7 @@ import 'package:sipkys/providers/players_provider.dart';
 
 class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
   ScoreNotifier({required this.players, required this.initialScore})
-      : super({}) {
-    setScoreboard();
-  }
+      : super({});
 
   final List<Player> players;
   final int initialScore;

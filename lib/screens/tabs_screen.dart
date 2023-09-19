@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sipkys/components/players/menu/create_player_modal.dart';
 import 'package:sipkys/components/ui/custom_alert.dart';
 import 'package:sipkys/components/ui/custom_fab.dart';
+import 'package:sipkys/providers/score_provider.dart';
 import 'package:sipkys/screens/game_screen.dart';
 import 'package:sipkys/screens/menu_screen.dart';
 import 'package:sipkys/screens/players_screen.dart';
@@ -46,6 +47,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
           return;
         }
 
+        ref.read(scoreProvider.notifier).setScoreboard();
         Navigator.push(
           context,
           MaterialPageRoute(

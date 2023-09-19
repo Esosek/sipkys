@@ -20,6 +20,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   late List<Player> players;
   late String gameMode;
   late ScoreNotifier scoreProviderNotifier;
+
   @override
   void initState() {
     super.initState();
