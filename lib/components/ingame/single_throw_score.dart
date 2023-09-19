@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SingleThrowScore extends StatelessWidget {
   const SingleThrowScore(this.value, {super.key});
 
-  final int value;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class SingleThrowScore extends StatelessWidget {
       width: 25,
       child: Center(
         child: Text(
-          value.toString(),
+          value,
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 fontWeight: FontWeight.w500,
               ),

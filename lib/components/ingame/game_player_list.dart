@@ -6,7 +6,9 @@ import 'package:sipkys/models/player.dart';
 import 'package:sipkys/providers/players_provider.dart';
 
 class GamePlayerList extends ConsumerStatefulWidget {
-  const GamePlayerList({super.key});
+  const GamePlayerList({super.key, required this.activePlayerIndex});
+
+  final int activePlayerIndex;
 
   @override
   ConsumerState<GamePlayerList> createState() => _GamePlayerListState();
@@ -14,7 +16,6 @@ class GamePlayerList extends ConsumerStatefulWidget {
 
 class _GamePlayerListState extends ConsumerState<GamePlayerList> {
   late List<Player> activePlayers;
-  int activePlayerIndex = 0;
 
   @override
   void initState() {
@@ -30,7 +31,7 @@ class _GamePlayerListState extends ConsumerState<GamePlayerList> {
         itemBuilder: (context, index) {
           return GamePlayerTile(
             player: activePlayers[index],
-            isActive: index == activePlayerIndex,
+            isActive: index == widget.activePlayerIndex,
           );
         },
       ),

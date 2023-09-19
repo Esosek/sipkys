@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:sipkys/components/ingame/game_player_list.dart';
 import 'package:sipkys/components/ui/keyboard.dart';
+import 'package:sipkys/models/player.dart';
 import 'package:sipkys/providers/game_mode_provider.dart';
 import 'package:sipkys/providers/players_provider.dart';
 import 'package:sipkys/providers/score_provider.dart';
@@ -15,16 +16,74 @@ class GameScreen extends ConsumerStatefulWidget {
 }
 
 class _GameScreenState extends ConsumerState<GameScreen> {
+  late List<Player> players;
+  late String gameMode;
   @override
+  void initState() {
+    super.initState();
+    players = ref.read(activePlayersProvider);
+    gameMode = ref.read(gameModeProvider);
+  }
+
+  int _activePlayerId = 0;
+  int _darts = 3;
+  bool _isDouble = false;
+  bool _isTriple = false;
+
   void onKeyboardTap(String keyCode) {
-    print('$keyCode was pressed');
+    if (keyCode == 'Vrátit') {
+      _isTriple = false;
+      _isDouble = false;
+    } else if (keyCode == 'Double') {
+      _isTriple = false;
+      _isDouble = !_isDouble;
+    } else if (keyCode == 'Triple') {
+      _isTriple = !_isTriple;
+      _isDouble = false;
+    } else {
+      int value = int.parse(keyCode);
+      submitThrow(value);
+    }
+  }
+
+  void submitThrow(int value) {
+    int finalValue = 0;
+    if (_isDouble) {
+      finalValue = value * 2;
+      _isDouble = false;
+    }
+    if (_isTriple) {
+      if (value == 25) {
+        finalValue = 25;
+      } else {
+        finalValue = value * 3;
+      }
+      _isTriple = false;
+    } else {
+      finalValue = value;
+    }
+    ref
+        .read(scoreProvider.notifier)
+        .submitThrow(players[_activePlayerId], finalValue);
+    _darts--;
+    if (_darts == 0) {
+      passTurn();
+    }
+  }
+
+  void passTurn() {
+    _darts = 3;
+    setState(() {
+      if (_activePlayerId == players.length - 1) {
+        _activePlayerId = 0;
+      } else {
+        _activePlayerId++;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final players = ref.read(activePlayersProvider);
-    final gameMode = ref.read(gameModeProvider);
-
     String playerText = 'hráči';
     if (players.length == 1) {
       playerText = 'hráč';
@@ -47,7 +106,9 @@ class _GameScreenState extends ConsumerState<GameScreen> {
       ),
       body: Column(
         children: [
-          const GamePlayerList(),
+          GamePlayerList(
+            activePlayerIndex: _activePlayerId,
+          ),
           const SizedBox(height: 5),
           Keyboard(
             onTap: onKeyboardTap,

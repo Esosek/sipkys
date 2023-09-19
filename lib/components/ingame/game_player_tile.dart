@@ -54,12 +54,18 @@ class GamePlayerTile extends ConsumerWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    const SingleThrowScore(20),
-                    const SingleThrowScore(4),
-                    const SingleThrowScore(0),
+                    SingleThrowScore(score.curRoundScores.isNotEmpty
+                        ? score.curRoundScores[0].toString()
+                        : ''),
+                    SingleThrowScore(score.curRoundScores.length > 1
+                        ? score.curRoundScores[1].toString()
+                        : ''),
+                    SingleThrowScore(score.curRoundScores.length > 2
+                        ? score.curRoundScores[2].toString()
+                        : ''),
                     const SizedBox(width: 5),
                     Text(
-                      '24',
+                      score.totalRoundScore.toString(),
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium!
@@ -81,7 +87,8 @@ class GamePlayerTile extends ConsumerWidget {
                       .copyWith(fontSize: 18),
                 ),
                 Text(
-                  '8.0',
+                  //score.roundAvg.toString(),
+                  '20.0',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],

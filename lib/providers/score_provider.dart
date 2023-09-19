@@ -16,13 +16,18 @@ class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
 
   void setScoreboard() {
     state = {
-      for (Player player in players) player: PlayerScore(initialScore),
+      for (Player player in players)
+        player: PlayerScore(totalScore: initialScore),
     };
   }
 
-  void subtractScore(Player player, int value) {
-    PlayerScore playerScore = state[player]!;
-    playerScore.saveThrow(value);
+  void submitThrow(Player player, int value) {
+    final playerScore = state[player]!.copyWith(
+      totalScore: state[player]!.totalScore - value,
+      curRoundScores: [...state[player]!.curRoundScores, value],
+      throwScores: [...state[player]!.throwScores, value],
+    );
+    state = {...state, player: playerScore};
   }
 }
 

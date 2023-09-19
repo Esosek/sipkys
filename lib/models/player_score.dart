@@ -1,38 +1,31 @@
 class PlayerScore {
-  PlayerScore(this._initialScore) : _totalScore = _initialScore;
+  const PlayerScore({
+    required this.totalScore,
+    this.throwScores = const [],
+    this.curRoundScores = const [],
+  });
 
-  final int _initialScore;
-  int _totalScore;
-  final List<int> _roundScores = [];
-  final List<int> _throwScores = [];
-  final List<int> _currentRoundScores = [];
-  int _darts = 3;
+  final int totalScore;
+  final List<int> curRoundScores;
+  final List<int> throwScores;
 
-  int _currentRoundTotalScore = 0;
-
-  int get totalScore => _totalScore;
-  int get roundScore => _currentRoundTotalScore;
-  List<int> get roundThrows => _roundScores;
-
-  double get roundAvg {
-    int scored = _initialScore - _totalScore;
-    return scored / _roundScores.length; // score/rounds
+  PlayerScore copyWith({
+    int? totalScore,
+    List<int>? curRoundScores,
+    List<int>? throwScores,
+  }) {
+    return PlayerScore(
+      totalScore: totalScore ?? this.totalScore,
+      curRoundScores: curRoundScores ?? this.curRoundScores,
+      throwScores: throwScores ?? this.throwScores,
+    );
   }
 
-  void saveThrow(int value) {
-    _totalScore -= value;
-    _throwScores.add(value);
-    _currentRoundTotalScore += value;
-    _darts--;
-
-    if (_darts == 0) {
-      _roundScores.add(_currentRoundTotalScore);
+  int get totalRoundScore {
+    int value = 0;
+    for (var score in curRoundScores) {
+      value += score;
     }
-  }
-
-  void startRound() {
-    _currentRoundScores.clear();
-    _currentRoundTotalScore = 0;
-    _darts = 3;
+    return value;
   }
 }
