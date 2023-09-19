@@ -17,6 +17,7 @@ List<Player> dummyPlayers = [
     id: 2,
     name: 'Mára',
     imageUrl: 'assets/images/rabbit.png',
+    isActive: true,
   ),
   Player(
     id: 3,
@@ -25,8 +26,8 @@ List<Player> dummyPlayers = [
   ),
   Player(
     id: 4,
-    name: 'Bro',
-    imageUrl: 'assets/images/hippo.png',
+    name: 'Alfík',
+    imageUrl: 'assets/images/parrot.png',
     wins: 3,
   ),
 ];

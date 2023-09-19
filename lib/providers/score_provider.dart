@@ -29,6 +29,13 @@ class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
     );
     state = {...state, player: playerScore};
   }
+
+  void resetPlayerRoundScore(Player player) {
+    final playerScore = state[player]!.copyWith(
+      curRoundScores: [],
+    );
+    state = {...state, player: playerScore};
+  }
 }
 
 final scoreProvider =

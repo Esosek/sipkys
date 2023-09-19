@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 class PlayerScore {
   const PlayerScore({
     required this.totalScore,
@@ -21,11 +23,11 @@ class PlayerScore {
     );
   }
 
-  int get totalRoundScore {
-    int value = 0;
-    for (var score in curRoundScores) {
-      value += score;
+  int get totalRoundScore => curRoundScores.sum;
+  double get roundAvg {
+    if (throwScores.length < 3) {
+      return totalRoundScore.toDouble();
     }
-    return value;
+    return throwScores.average * 3;
   }
 }

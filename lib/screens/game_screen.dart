@@ -18,11 +18,13 @@ class GameScreen extends ConsumerStatefulWidget {
 class _GameScreenState extends ConsumerState<GameScreen> {
   late List<Player> players;
   late String gameMode;
+  late ScoreNotifier scoreProviderNotifier;
   @override
   void initState() {
     super.initState();
     players = ref.read(activePlayersProvider);
     gameMode = ref.read(gameModeProvider);
+    scoreProviderNotifier = ref.read(scoreProvider.notifier);
   }
 
   int _activePlayerId = 0;
@@ -47,24 +49,22 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   }
 
   void submitThrow(int value) {
-    int finalValue = 0;
+    int finalValue = value;
+    if (_isTriple && value != 25) {
+      finalValue = value * 3;
+      _isTriple = false;
+    }
     if (_isDouble) {
       finalValue = value * 2;
       _isDouble = false;
     }
-    if (_isTriple) {
-      if (value == 25) {
-        finalValue = 25;
-      } else {
-        finalValue = value * 3;
-      }
-      _isTriple = false;
-    } else {
-      finalValue = value;
+    // Overthrew
+    if (finalValue >
+        ref.read(scoreProvider)[players[_activePlayerId]]!.totalScore) {
+      passTurn();
+      return;
     }
-    ref
-        .read(scoreProvider.notifier)
-        .submitThrow(players[_activePlayerId], finalValue);
+    scoreProviderNotifier.submitThrow(players[_activePlayerId], finalValue);
     _darts--;
     if (_darts == 0) {
       passTurn();
@@ -80,6 +80,9 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         _activePlayerId++;
       }
     });
+
+    // Clear current round scores UI for newly active player
+    scoreProviderNotifier.resetPlayerRoundScore(players[_activePlayerId]);
   }
 
   @override
