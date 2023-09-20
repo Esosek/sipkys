@@ -1,3 +1,5 @@
-# sipkys
+# Šipkys
 
-A new Flutter project.
+Jednoduché počítadlo šipek s dostupnými módy
+- 501
+- 701
