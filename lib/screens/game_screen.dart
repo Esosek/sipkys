@@ -6,6 +6,7 @@ import 'package:sipkys/components/ui/custom_elevated_btn.dart';
 import 'package:sipkys/components/ui/keyboard.dart';
 import 'package:sipkys/models/player.dart';
 import 'package:sipkys/providers/game_mode_provider.dart';
+import 'package:sipkys/providers/modifier_provider.dart';
 import 'package:sipkys/providers/players_provider.dart';
 import 'package:sipkys/providers/score_provider.dart';
 import 'package:sipkys/screens/end_screen.dart';
@@ -21,6 +22,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   late List<Player> players;
   late String gameMode;
   late ScoreNotifier scoreProviderNotifier;
+  late ModifierNotifier modifierNotifier;
 
   @override
   void initState() {
@@ -28,65 +30,55 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     players = ref.read(activePlayersProvider);
     gameMode = ref.read(gameModeProvider);
     scoreProviderNotifier = ref.read(scoreProvider.notifier);
+    modifierNotifier = ref.read(modifierProvider.notifier);
   }
 
   int _activePlayerId = 0;
   int _darts = 3;
-  bool _isDouble = false;
-  bool _isTriple = false;
 
   void onKeyboardTap(String keyCode) {
     if (keyCode == 'Vrátit') {
-      _isTriple = false;
-      _isDouble = false;
+      modifierNotifier.toggleModifier(Modifier.double, false);
+      modifierNotifier.toggleModifier(Modifier.triple, false);
     } else if (keyCode == 'Double') {
-      _isTriple = false;
-      _isDouble = !_isDouble;
+      modifierNotifier.toggleModifier(Modifier.triple, false);
+      modifierNotifier.toggleModifier(Modifier.double);
     } else if (keyCode == 'Triple') {
-      _isTriple = !_isTriple;
-      _isDouble = false;
+      modifierNotifier.toggleModifier(Modifier.triple);
+      modifierNotifier.toggleModifier(Modifier.double, false);
     } else {
       int value = int.parse(keyCode);
-      submitThrow(value);
-    }
-  }
 
-  void submitThrow(int value) {
-    int finalValue = value;
-    if (_isTriple && value != 25) {
-      finalValue = value * 3;
-      _isTriple = false;
-    }
-    if (_isDouble) {
-      finalValue = value * 2;
-      _isDouble = false;
-    }
-    // Overthrew
-    if (finalValue >
-        ref.read(scoreProvider)[players[_activePlayerId]]!.totalScore) {
-      passTurn();
-      return;
-    }
-    scoreProviderNotifier.submitThrow(players[_activePlayerId], finalValue);
+      final submitSucceeded =
+          scoreProviderNotifier.submitThrow(players[_activePlayerId], value);
 
-    // Check if the player closed the game
-    if (ref.read(scoreProvider)[players[_activePlayerId]]!.totalScore <= 0) {
-      players[_activePlayerId].wins++;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => EndScreen(
-            winnerName: players[_activePlayerId].name,
+      modifierNotifier.toggleModifier(Modifier.double, false);
+      modifierNotifier.toggleModifier(Modifier.triple, false);
+
+      if (!submitSucceeded) {
+        passTurn();
+        return;
+      }
+
+      // Check if the player closed the game
+      if (ref.read(scoreProvider)[players[_activePlayerId]]!.totalScore <= 0) {
+        players[_activePlayerId].wins++;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EndScreen(
+              winnerName: players[_activePlayerId].name,
+            ),
           ),
-        ),
-      );
-      return;
-    }
+        );
+        return;
+      }
 
-    // If not, pass the turn
-    _darts--;
-    if (_darts == 0) {
-      passTurn();
+      // If not, use a dart and eventually pass the turn
+      _darts--;
+      if (_darts == 0) {
+        passTurn();
+      }
     }
   }
 

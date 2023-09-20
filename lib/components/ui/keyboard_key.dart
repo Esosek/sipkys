@@ -7,16 +7,20 @@ class KeyboardKey extends StatelessWidget {
     required this.onTap,
     this.flex = 1,
     this.spacing = 0,
+    this.isActive = false,
     this.backgroundColor,
     this.foregroundColor,
   });
 
   final String label;
-  final int flex;
   final void Function(String) onTap;
+  final int flex;
   final double spacing;
+  final bool isActive;
   final Color? backgroundColor;
   final Color? foregroundColor;
+
+  static const double borderWidth = 2.5;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +32,18 @@ class KeyboardKey extends StatelessWidget {
           child: InkWell(
             onTap: () => onTap(label),
             child: Ink(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              color:
-                  backgroundColor ?? Theme.of(context).colorScheme.onBackground,
+              padding: EdgeInsets.symmetric(
+                  vertical: isActive ? 14 - borderWidth : 14),
+              decoration: BoxDecoration(
+                border: isActive
+                    ? Border.all(
+                        width: borderWidth,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
+                color: backgroundColor ??
+                    Theme.of(context).colorScheme.onBackground,
+              ),
               child: Center(
                 child: Text(
                   label.toUpperCase(),

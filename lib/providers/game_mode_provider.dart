@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final gameModes = ['5', '301', '501'];
+final gameModes = ['301', '501'];
 
 class GameModeNotifier extends StateNotifier<String> {
   GameModeNotifier() : super('301');

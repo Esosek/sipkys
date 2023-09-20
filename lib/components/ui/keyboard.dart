@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:sipkys/components/ui/keyboard_key.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Keyboard extends StatelessWidget {
+import 'package:sipkys/components/ui/keyboard_key.dart';
+import 'package:sipkys/providers/modifier_provider.dart';
+
+class Keyboard extends ConsumerWidget {
   const Keyboard({super.key, required this.onTap});
 
   final double _spacing = 2.5;
   final void Function(String) onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final modifiers = ref.watch(modifierProvider);
+
     return Container(
       color: Theme.of(context).colorScheme.background,
       padding: EdgeInsets.all(_spacing),
@@ -19,6 +24,7 @@ class Keyboard extends StatelessWidget {
               KeyboardKey('0', spacing: _spacing, onTap: onTap),
               KeyboardKey(
                 'Double',
+                isActive: modifiers[Modifier.double]!,
                 spacing: _spacing,
                 flex: 2,
                 onTap: onTap,
@@ -29,6 +35,7 @@ class Keyboard extends StatelessWidget {
               KeyboardKey(
                 'Triple',
                 spacing: _spacing,
+                isActive: modifiers[Modifier.triple]!,
                 flex: 2,
                 onTap: onTap,
                 foregroundColor: Colors.white,
