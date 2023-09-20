@@ -11,14 +11,22 @@ import 'package:sipkys/screens/players_screen.dart';
 import 'package:sipkys/providers/players_provider.dart';
 
 class TabsScreen extends ConsumerStatefulWidget {
-  const TabsScreen({super.key});
+  const TabsScreen({super.key, this.screenIndex});
+
+  final int? screenIndex;
 
   @override
   ConsumerState<TabsScreen> createState() => _TabsScreenState();
 }
 
 class _TabsScreenState extends ConsumerState<TabsScreen> {
-  int activeScreenIndex = 0;
+  late int activeScreenIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    activeScreenIndex = widget.screenIndex ?? 0;
+  }
 
   void _switchScreen(BuildContext context, int index) {
     setState(() {
@@ -39,6 +47,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     String screenTitle = 'Šipkys Počítadlo';
+
     Widget fab = CustomFAB(
       icon: Icons.play_arrow_rounded,
       onPressed: () {

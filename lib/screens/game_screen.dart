@@ -71,10 +71,12 @@ class _GameScreenState extends ConsumerState<GameScreen> {
 
     // Check if the player closed the game
     if (ref.read(scoreProvider)[players[_activePlayerId]]!.totalScore <= 0) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const EndScreen(),
+          builder: (context) => EndScreen(
+            winnerName: players[_activePlayerId].name,
+          ),
         ),
       );
       return;
