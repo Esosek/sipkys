@@ -18,6 +18,7 @@ final theme = ThemeData(
         color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
     labelMedium: const TextStyle(
         color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+    labelSmall: const TextStyle(color: Colors.white, fontSize: 12),
     bodyLarge: const TextStyle(color: Colors.white, fontSize: 20),
     bodyMedium: const TextStyle(color: Colors.white30, fontSize: 18),
     bodySmall: const TextStyle(color: Colors.white, fontSize: 14),

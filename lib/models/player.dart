@@ -10,7 +10,7 @@ class Player {
   final int id;
   final String name;
   final String imageUrl;
-  final int wins;
+  int wins;
   bool isActive;
 
   Player copyWith({

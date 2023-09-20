@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sipkys/components/players/endscreen/endscreen_player_list.dart';
+import 'package:sipkys/components/ui/custom_elevated_btn.dart';
 
 import 'package:sipkys/components/ui/custom_fab.dart';
 import 'package:sipkys/providers/score_provider.dart';
@@ -59,7 +61,17 @@ class EndScreen extends ConsumerWidget {
         onPressed: () => _resetGame(context, ref),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: const Placeholder(),
+      body: Column(
+        children: [
+          const EndScreenPlayerList(),
+          const SizedBox(height: 16),
+          CustomElevatedBtn(
+              title: 'Menu', onPressed: () => Navigator.pop(context)),
+          const SizedBox(height: 16),
+          CustomElevatedBtn(title: 'Vrátit hod', onPressed: () {}),
+          const SizedBox(height: 64)
+        ],
+      ),
     );
   }
 }

@@ -23,11 +23,12 @@ List<Player> dummyPlayers = [
     id: 3,
     name: 'DlouhýNázevHráčeProTest',
     imageUrl: 'assets/images/monkey.png',
+    wins: 15,
   ),
   Player(
     id: 4,
     name: 'Alfík',
     imageUrl: 'assets/images/parrot.png',
-    wins: 3,
+    wins: 123,
   ),
 ];

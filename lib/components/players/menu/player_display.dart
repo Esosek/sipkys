@@ -49,7 +49,7 @@ class PlayerDisplay extends StatelessWidget {
                   left: 0,
                   child: CircleAvatar(
                     foregroundColor: Colors.black,
-                    radius: 15,
+                    radius: 17,
                     backgroundColor: const Color.fromARGB(255, 203, 209, 78),
                     child: Text(
                       player.wins.toString(),
