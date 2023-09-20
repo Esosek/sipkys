@@ -68,7 +68,11 @@ class EndScreen extends ConsumerWidget {
           CustomElevatedBtn(
               title: 'Menu', onPressed: () => Navigator.pop(context)),
           const SizedBox(height: 16),
-          CustomElevatedBtn(title: 'Vrátit hod', onPressed: () {}),
+          CustomElevatedBtn(
+              title: 'Vrátit hod',
+              foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
+              onPressed: () {}),
           const SizedBox(height: 64)
         ],
       ),
