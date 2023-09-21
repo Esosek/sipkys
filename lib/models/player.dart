@@ -7,7 +7,7 @@ class Player {
     this.isActive = false,
   });
 
-  final int id;
+  final String id;
   final String name;
   final String imageUrl;
   int wins;

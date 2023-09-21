@@ -21,7 +21,7 @@ class _AddPlayerModalState extends ConsumerState<AddPlayerModal> {
         ref.watch(playersProvider).where((player) => !player.isActive).toList();
     Widget content = const NoPlayersNotice(popContext: true);
 
-    void activatePlayer(int playerId) {
+    void activatePlayer(String playerId) {
       ref.read(playersProvider.notifier).setPlayerActiveStatus(playerId, true);
     }
 

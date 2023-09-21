@@ -11,7 +11,7 @@ class PlayerDisplay extends StatelessWidget {
       this.crossAxisAlignment = CrossAxisAlignment.center});
 
   final Player player;
-  final void Function(int)? onTap;
+  final void Function(String)? onTap;
   final bool showWins;
   final double iconSize;
   final CrossAxisAlignment crossAxisAlignment;
