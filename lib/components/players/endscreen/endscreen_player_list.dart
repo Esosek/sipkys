@@ -11,7 +11,7 @@ class EndScreenPlayerList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final playersScore = ref.read(scoreProvider);
+    final playersScore = ref.watch(scoreProvider);
 
     final List<MapEntry<Player, PlayerScore>> sortedPlayersList = playersScore
         .entries

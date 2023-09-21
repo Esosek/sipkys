@@ -12,15 +12,14 @@ Map<Modifier, bool> modifiers = {
 };
 
 class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
-  ScoreNotifier({required this.players, required this.initialScore})
-      : super({});
+  ScoreNotifier({required this.initialScore, required this.ref}) : super({});
 
-  final List<Player> players;
   final int initialScore;
+  final StateNotifierProviderRef ref;
 
   void setScoreboard() {
     state = {
-      for (Player player in players)
+      for (Player player in ref.read(activePlayersProvider))
         player: PlayerScore(totalScore: initialScore),
     };
   }
@@ -57,12 +56,11 @@ class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
 
 final scoreProvider =
     StateNotifierProvider<ScoreNotifier, Map<Player, PlayerScore>>((ref) {
-  final activePlayers = ref.watch(activePlayersProvider);
   ref.listen(modifierProvider, (prevModifiers, newModifiers) {
     modifiers = newModifiers;
   });
   return ScoreNotifier(
-    players: activePlayers,
+    ref: ref,
     initialScore: int.parse(
       ref.watch(gameModeProvider),
     ),

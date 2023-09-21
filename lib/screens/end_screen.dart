@@ -40,7 +40,7 @@ class EndScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         title: Text(
-          '$winnerName vyhrál!',
+          '$winnerName vyhrál/a!',
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
                 color: Theme.of(context).colorScheme.onPrimaryContainer,
               ),

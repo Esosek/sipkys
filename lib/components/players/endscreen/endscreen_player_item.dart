@@ -16,7 +16,8 @@ class EndScreenPlayerItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final playerScores = ref.read(scoreProvider);
+    final playerScores = ref.watch(scoreProvider);
+    int playerWins = player.wins; // Workaround for inaccurate winner value
 
     Widget standingContent = SizedBox(
         width: 30,
@@ -31,6 +32,7 @@ class EndScreenPlayerItem extends ConsumerWidget {
         ));
 
     if (standing == 1) {
+      playerWins++;
       standingContent = SizedBox(
         width: 30,
         child: CircleAvatar(
@@ -45,7 +47,6 @@ class EndScreenPlayerItem extends ConsumerWidget {
       color: Theme.of(context).colorScheme.secondaryContainer,
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       child: Row(
-        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           standingContent,
           const SizedBox(width: 16),
@@ -89,7 +90,7 @@ class EndScreenPlayerItem extends ConsumerWidget {
               Column(
                 children: [
                   Text(
-                    player.wins.toString(),
+                    playerWins.toString(),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Text('Wins',
