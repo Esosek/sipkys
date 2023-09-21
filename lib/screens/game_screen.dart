@@ -5,6 +5,7 @@ import 'package:sipkys/components/ingame/game_player_list.dart';
 import 'package:sipkys/components/ui/custom_elevated_btn.dart';
 import 'package:sipkys/components/ui/keyboard.dart';
 import 'package:sipkys/models/player.dart';
+import 'package:sipkys/models/player_score.dart';
 import 'package:sipkys/providers/game_mode_provider.dart';
 import 'package:sipkys/providers/modifier_provider.dart';
 import 'package:sipkys/providers/players_provider.dart';
@@ -19,15 +20,16 @@ class GameScreen extends ConsumerStatefulWidget {
 }
 
 class _GameScreenState extends ConsumerState<GameScreen> {
-  late List<Player> players;
+  late List<Player> activePlayers;
   late String gameMode;
   late ScoreNotifier scoreProviderNotifier;
+  late Map<Player, PlayerScore> scores;
   late ModifierNotifier modifierNotifier;
 
   @override
   void initState() {
     super.initState();
-    players = ref.read(activePlayersProvider);
+    activePlayers = ref.read(activePlayersProvider);
     gameMode = ref.read(gameModeProvider);
     scoreProviderNotifier = ref.read(scoreProvider.notifier);
     modifierNotifier = ref.read(modifierProvider.notifier);
@@ -40,6 +42,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     if (keyCode == 'Vrátit') {
       modifierNotifier.toggleModifier(Modifier.double, false);
       modifierNotifier.toggleModifier(Modifier.triple, false);
+      revertThrow();
     } else if (keyCode == 'Double') {
       modifierNotifier.toggleModifier(Modifier.triple, false);
       modifierNotifier.toggleModifier(Modifier.double);
@@ -49,8 +52,8 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     } else {
       int value = int.parse(keyCode);
 
-      final submitSucceeded =
-          scoreProviderNotifier.submitThrow(players[_activePlayerId], value);
+      final submitSucceeded = scoreProviderNotifier.submitThrow(
+          activePlayers[_activePlayerId], value);
 
       modifierNotifier.toggleModifier(Modifier.double, false);
       modifierNotifier.toggleModifier(Modifier.triple, false);
@@ -61,15 +64,16 @@ class _GameScreenState extends ConsumerState<GameScreen> {
       }
 
       // Check if the player closed the game
-      if (ref.read(scoreProvider)[players[_activePlayerId]]!.totalScore <= 0) {
+      if (ref.read(scoreProvider)[activePlayers[_activePlayerId]]!.totalScore <=
+          0) {
         ref
             .read(playersProvider.notifier)
-            .updatePlayerWins(players[_activePlayerId].id, 1);
+            .updatePlayerWins(activePlayers[_activePlayerId].id, 1);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => EndScreen(
-              winnerName: players[_activePlayerId].name,
+              winnerName: activePlayers[_activePlayerId].name,
             ),
           ),
         );
@@ -87,7 +91,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   void passTurn() {
     _darts = 3;
     setState(() {
-      if (_activePlayerId == players.length - 1) {
+      if (_activePlayerId == activePlayers.length - 1) {
         _activePlayerId = 0;
       } else {
         _activePlayerId++;
@@ -95,7 +99,32 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     });
 
     // Clear current round scores UI for newly active player
-    scoreProviderNotifier.resetPlayerRoundScore(players[_activePlayerId]);
+    scoreProviderNotifier.resetPlayerRoundScore(activePlayers[_activePlayerId]);
+  }
+
+  void revertThrow() {
+    if (_activePlayerId == 0) {
+      // No throws to revert
+      if (scores[activePlayers[_activePlayerId]]!.throwScores.isEmpty) {
+        return;
+        // Revert to last player
+      } else if (_darts == 3) {
+        _activePlayerId = activePlayers.length - 1;
+        _darts = 1;
+      } else {
+        _darts++;
+      }
+    } else {
+      // Revert to previous player
+      if (_darts == 3) {
+        _activePlayerId--;
+        _darts = 1;
+      } else {
+        // Revert throw for current player
+        _darts++;
+      }
+    }
+    scoreProviderNotifier.revertThrow(activePlayers[_activePlayerId]);
   }
 
   Future<bool> _showCancelDialog() async {
@@ -138,15 +167,17 @@ class _GameScreenState extends ConsumerState<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    scores = ref.watch(scoreProvider);
+
     String playerText = 'hráči';
-    if (players.length == 1) {
+    if (activePlayers.length == 1) {
       playerText = 'hráč';
-    } else if (players.length > 4) {
+    } else if (activePlayers.length > 4) {
       playerText = 'hráčů';
     }
 
     final screenTitle =
-        'Mód $gameMode - ${players.length.toString()} $playerText';
+        'Mód $gameMode - ${activePlayers.length.toString()} $playerText';
 
     return Scaffold(
       appBar: AppBar(
