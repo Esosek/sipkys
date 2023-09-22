@@ -4,6 +4,7 @@ import 'package:sipkys/components/ingame/single_throw_score.dart';
 import 'package:sipkys/components/players/menu/player_display.dart';
 
 import 'package:sipkys/models/player.dart';
+import 'package:sipkys/models/player_score.dart';
 import 'package:sipkys/providers/score_provider.dart';
 
 class GamePlayerTile extends ConsumerWidget {
@@ -15,7 +16,9 @@ class GamePlayerTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final score = ref.watch(scoreProvider)[player]!;
+    final score = ref.watch(
+            scoreProvider.select((playerScores) => playerScores[player])) ??
+        const PlayerScore(totalScore: 404);
     return Card(
       color: Theme.of(context).colorScheme.secondaryContainer,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

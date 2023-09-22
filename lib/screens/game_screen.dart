@@ -13,7 +13,9 @@ import 'package:sipkys/providers/score_provider.dart';
 import 'package:sipkys/screens/end_screen.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
-  const GameScreen({super.key});
+  const GameScreen({super.key, this.activePlayerIndex = 0});
+
+  final int activePlayerIndex;
 
   @override
   ConsumerState<GameScreen> createState() => _GameScreenState();
@@ -33,6 +35,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     gameMode = ref.read(gameModeProvider);
     scoreProviderNotifier = ref.read(scoreProvider.notifier);
     modifierNotifier = ref.read(modifierProvider.notifier);
+    _activePlayerId = widget.activePlayerIndex;
   }
 
   int _activePlayerId = 0;
@@ -64,16 +67,19 @@ class _GameScreenState extends ConsumerState<GameScreen> {
       }
 
       // Check if the player closed the game
-      if (ref.read(scoreProvider)[activePlayers[_activePlayerId]]!.totalScore <=
+      if (ref.read(scoreProvider)[activePlayers[_activePlayerId]]!.totalScore ==
           0) {
-        ref
+        /*ref
             .read(playersProvider.notifier)
-            .updatePlayerWins(activePlayers[_activePlayerId].id, 1);
+            .updatePlayerWins(activePlayers[_activePlayerId].id, 1);*/
+
+        _darts--;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => EndScreen(
-              winnerName: activePlayers[_activePlayerId].name,
+              winner: activePlayers[_activePlayerId],
+              winnerIndex: _activePlayerId,
             ),
           ),
         );
