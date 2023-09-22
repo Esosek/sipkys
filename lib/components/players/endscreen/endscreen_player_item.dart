@@ -17,7 +17,6 @@ class EndScreenPlayerItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final playerScores = ref.watch(scoreProvider);
-    int playerWins = player.wins; // Workaround for inaccurate winner value
 
     Widget standingContent = SizedBox(
         width: 30,
@@ -32,7 +31,6 @@ class EndScreenPlayerItem extends ConsumerWidget {
         ));
 
     if (standing == 1) {
-      playerWins++;
       standingContent = SizedBox(
         width: 30,
         child: CircleAvatar(
@@ -90,7 +88,7 @@ class EndScreenPlayerItem extends ConsumerWidget {
               Column(
                 children: [
                   Text(
-                    playerWins.toString(),
+                    player.wins.toString(),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Text('Wins',

@@ -69,6 +69,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
       // Check if the player closed the game
       if (ref.read(scoreProvider)[activePlayers[_activePlayerId]]!.totalScore ==
           0) {
+        activePlayers[_activePlayerId].wins++;
         /*ref
             .read(playersProvider.notifier)
             .updatePlayerWins(activePlayers[_activePlayerId].id, 1);*/

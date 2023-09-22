@@ -47,13 +47,16 @@ class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
   }
 
   void revertThrow(Player player) {
+    final bool hasScores = state[player]!.curRoundScores.isNotEmpty;
     final throwValue = state[player]!.throwScores.last;
+
     final playerScore = state[player]!.copyWith(
       totalScore: state[player]!.totalScore + throwValue,
-      curRoundScores: state[player]!.curRoundScores.isEmpty
-          ? []
-          : [...state[player]!.curRoundScores..removeLast()],
-      throwScores: [...state[player]!.throwScores..removeLast()],
+      curRoundScores:
+          !hasScores ? [] : [...state[player]!.curRoundScores..removeLast()],
+      throwScores: hasScores
+          ? [...state[player]!.throwScores..removeLast()]
+          : [...state[player]!.throwScores],
     );
     state = {...state, player: playerScore};
   }
