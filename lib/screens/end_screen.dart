@@ -5,7 +5,6 @@ import 'package:sipkys/components/players/endscreen/endscreen_player_list.dart';
 import 'package:sipkys/components/ui/custom_elevated_btn.dart';
 import 'package:sipkys/components/ui/custom_fab.dart';
 import 'package:sipkys/models/player.dart';
-import 'package:sipkys/providers/players_provider.dart';
 import 'package:sipkys/providers/score_provider.dart';
 import 'package:sipkys/screens/game_screen.dart';
 import 'package:sipkys/screens/tabs_screen.dart';
