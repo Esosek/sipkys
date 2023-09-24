@@ -68,7 +68,11 @@ class Keyboard extends ConsumerWidget {
             children: [
               for (int i = 15; i <= 20; i++)
                 KeyboardKey(i.toString(), spacing: _spacing, onTap: onTap),
-              KeyboardKey('25', spacing: _spacing, onTap: onTap),
+              !modifiers[Modifier.triple]!
+                  ? KeyboardKey('25', spacing: _spacing, onTap: onTap)
+                  : const Expanded(
+                      child: SizedBox(),
+                    ),
             ],
           ),
         ],
