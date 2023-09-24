@@ -39,7 +39,6 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   }
 
   int _activePlayerId = 0;
-  int _darts = 3;
 
   void onKeyboardTap(String keyCode) {
     if (keyCode == 'Vrátit') {
@@ -74,7 +73,6 @@ class _GameScreenState extends ConsumerState<GameScreen> {
             .read(playersProvider.notifier)
             .updatePlayerWins(activePlayers[_activePlayerId].id, 1);
 
-        _darts--;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -87,51 +85,54 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         return;
       }
 
-      // If not, use a dart and eventually pass the turn
-      _darts--;
-      if (_darts == 0) {
+      if (scoreProviderNotifier.isTurnOver(activePlayers[_activePlayerId])) {
         passTurn();
       }
     }
   }
 
-  void passTurn() {
-    _darts = 3;
-    setState(() {
-      if (_activePlayerId == activePlayers.length - 1) {
-        _activePlayerId = 0;
-      } else {
-        _activePlayerId++;
-      }
-    });
+  void passTurn({bool revert = false}) {
+    if (revert) {
+      setState(() {
+        if (_activePlayerId == 0) {
+          _activePlayerId = activePlayers.length - 1;
+        } else {
+          _activePlayerId--;
+        }
+      });
+      return;
+    } else {
+      setState(() {
+        if (_activePlayerId == activePlayers.length - 1) {
+          _activePlayerId = 0;
+        } else {
+          _activePlayerId++;
+        }
+      });
+    }
 
     // Clear current round scores UI for newly active player
     scoreProviderNotifier.resetPlayerRoundScore(activePlayers[_activePlayerId]);
   }
 
   void revertThrow() {
-    if (_activePlayerId == 0) {
-      // No throws to revert
-      if (scores[activePlayers[_activePlayerId]]!.throwScores.isEmpty) {
-        return;
-        // Revert to last player
-      } else if (_darts == 3) {
-        _activePlayerId = activePlayers.length - 1;
-        _darts = 1;
-      } else {
-        _darts++;
-      }
-    } else {
-      // Revert to previous player
-      if (_darts == 3) {
-        _activePlayerId--;
-        _darts = 1;
-      } else {
-        // Revert throw for current player
-        _darts++;
-      }
+    // Revert not possible
+    if (scores[activePlayers[0]]!.throwScores.isEmpty && _activePlayerId == 0) {
+      return;
     }
-    scoreProviderNotifier.revertThrow(activePlayers[_activePlayerId]);
+
+    int previousPlayerId = _activePlayerId - 1;
+    if (previousPlayerId < 0) {
+      previousPlayerId = activePlayers.length - 1;
+    }
+
+    bool wasPlayerSwitched = scoreProviderNotifier.revertThrow(
+        activePlayers[_activePlayerId],
+        previousPlayer: activePlayers[previousPlayerId]);
+
+    if (wasPlayerSwitched) {
+      passTurn(revert: true);
+    }
   }
 
   Future<bool> _showCancelDialog() async {

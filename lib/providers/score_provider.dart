@@ -64,8 +64,19 @@ class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
     return true; // submit succeeded
   }
 
-  void revertThrow(Player player) {
+  // if player had to be switched, returns true
+  bool revertThrow(Player currentPlayer, {Player? previousPlayer}) {
+    bool playerWasSwitched = state[currentPlayer]!.throwScores.length % 3 == 0;
+    Player player = playerWasSwitched ? previousPlayer! : currentPlayer;
+
     final bool hasScores = state[player]!.curRoundScores.isNotEmpty;
+
+    // Probably overthrew or reverting to deep history
+    // Deep history is edge case, not working atm
+    if (!hasScores) {
+      return playerWasSwitched;
+    }
+
     final throwValue = state[player]!.throwScores.last;
 
     final playerScore = state[player]!.copyWith(
@@ -77,6 +88,7 @@ class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
           : [...state[player]!.throwScores],
     );
     state = {...state, player: playerScore};
+    return playerWasSwitched;
   }
 
   void resetPlayerRoundScore(Player player) {
@@ -84,6 +96,13 @@ class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
       curRoundScores: [],
     );
     state = {...state, player: playerScore};
+  }
+
+  bool isTurnOver(Player player) {
+    if (state[player]!.throwScores.length % 3 == 0) {
+      return true;
+    }
+    return false;
   }
 }
 
