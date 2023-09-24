@@ -32,18 +32,36 @@ class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
       value *= 3;
     }
 
+    PlayerScore updatedPlayerScore = state[player]!;
+
     // Overthrow
-    if (value > state[player]!.totalScore) {
-      return false; // submitting failed
+    if (value > updatedPlayerScore.totalScore) {
+      int newTotalScore = updatedPlayerScore.totalScore;
+      List<int> updatedThrowScores = updatedPlayerScore.throwScores;
+
+      for (var throwValue in updatedPlayerScore.curRoundScores) {
+        newTotalScore += throwValue;
+        updatedThrowScores.removeLast();
+      }
+
+      updatedPlayerScore = updatedPlayerScore.copyWith(
+        totalScore: newTotalScore,
+        curRoundScores: [],
+        throwScores: updatedThrowScores,
+      );
+
+      state = {...state, player: updatedPlayerScore};
+      return false; // submit failed
+    } else {
+      updatedPlayerScore = updatedPlayerScore.copyWith(
+        totalScore: updatedPlayerScore.totalScore - value,
+        curRoundScores: [...updatedPlayerScore.curRoundScores, value],
+        throwScores: [...updatedPlayerScore.throwScores, value],
+      );
     }
 
-    final playerScore = state[player]!.copyWith(
-      totalScore: state[player]!.totalScore - value,
-      curRoundScores: [...state[player]!.curRoundScores, value],
-      throwScores: [...state[player]!.throwScores, value],
-    );
-    state = {...state, player: playerScore};
-    return true;
+    state = {...state, player: updatedPlayerScore};
+    return true; // submit succeeded
   }
 
   void revertThrow(Player player) {
