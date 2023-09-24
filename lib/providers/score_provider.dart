@@ -28,7 +28,7 @@ class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
     // Double and Triple modifiers
     if (modifiers[Modifier.double]!) {
       value *= 2;
-    } else if (modifiers[Modifier.triple]! && value != 25) {
+    } else if (modifiers[Modifier.triple]!) {
       value *= 3;
     }
 
@@ -66,7 +66,9 @@ class ScoreNotifier extends StateNotifier<Map<Player, PlayerScore>> {
 
   // if player had to be switched, returns true
   bool revertThrow(Player currentPlayer, {Player? previousPlayer}) {
-    bool playerWasSwitched = state[currentPlayer]!.throwScores.length % 3 == 0;
+    bool playerWasSwitched =
+        state[currentPlayer]!.throwScores.length % 3 == 0 &&
+            state[currentPlayer]!.totalScore != 0;
     Player player = playerWasSwitched ? previousPlayer! : currentPlayer;
 
     final bool hasScores = state[player]!.curRoundScores.isNotEmpty;

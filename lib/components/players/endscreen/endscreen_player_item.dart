@@ -74,7 +74,7 @@ class EndScreenPlayerItem extends ConsumerWidget {
               Column(
                 children: [
                   Text(
-                    playerScores[player]!.roundAvg.toStringAsFixed(2),
+                    playerScores[player]!.roundAvg.toStringAsFixed(1),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Text('Avg',

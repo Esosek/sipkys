@@ -33,7 +33,6 @@ class EndScreen extends ConsumerWidget {
   void _revertThrow(BuildContext context, WidgetRef ref, Player winner) {
     ref.read(scoreProvider.notifier).revertThrow(winner);
     ref.read(playersProvider.notifier).updatePlayerWins(winner.id, -1);
-    //winner.wins--;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
