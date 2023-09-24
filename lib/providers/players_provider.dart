@@ -34,9 +34,11 @@ class PlayersNotifier extends StateNotifier<List<Player>> {
   }
 
   void updatePlayerWins(String playerId, int value) {
-    state = state.map((player) {
+    // Omiting set state due to a bug
+    state.map((player) {
       if (player.id == playerId) {
-        updatePrefsPlayer(playerId, wins: player.wins + value);
+        player.wins += value; // Workaround
+        updatePrefsPlayer(playerId, wins: player.wins);
         return player.copyWith(wins: player.wins + value);
       }
       return player;
