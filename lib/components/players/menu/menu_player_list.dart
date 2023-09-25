@@ -12,7 +12,33 @@ class MenuPlayerList extends ConsumerStatefulWidget {
   ConsumerState<MenuPlayerList> createState() => _PlayerListState();
 }
 
-class _PlayerListState extends ConsumerState<MenuPlayerList> {
+class _PlayerListState extends ConsumerState<MenuPlayerList>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 600),
+    vsync: this,
+  );
+
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: const Offset(1.5, 0.0),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeOut,
+  ));
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.forward();
+  }
+
   @override
   Widget build(BuildContext context) {
     final activePlayers = ref.watch(activePlayersProvider);
@@ -56,10 +82,14 @@ class _PlayerListState extends ConsumerState<MenuPlayerList> {
                 onReorder: reorderPlayers,
                 children: [
                   for (Player player in activePlayers)
-                    MenuPlayerListItem(
+                    SlideTransition(
                       key: ValueKey(player.id),
-                      player,
-                      onPressed: deactivatePlayer,
+                      position: _offsetAnimation,
+                      child: MenuPlayerListItem(
+                        key: ValueKey(player.id),
+                        player,
+                        onPressed: deactivatePlayer,
+                      ),
                     ),
                 ],
               ),
